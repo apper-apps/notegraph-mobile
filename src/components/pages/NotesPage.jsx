@@ -6,6 +6,7 @@ import { noteService } from "@/services/api/noteService";
 import ApperIcon from "@/components/ApperIcon";
 import NoteCard from "@/components/molecules/NoteCard";
 import NoteEditor from "@/components/organisms/NoteEditor";
+import CalendarView from "@/components/organisms/CalendarView";
 import Empty from "@/components/ui/Empty";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
@@ -186,29 +187,38 @@ case 'updated':
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className={`${
-            currentView === 'grid' 
-              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-              : 'space-y-4'
-          }`}
         >
-          {sortedNotes.map((note, index) => (
-            <motion.div
-              key={note.Id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className={currentView === 'list' ? 'w-full' : ''}
-            >
-              <NoteCard
-                note={note}
-                onClick={() => handleEditNote(note)}
-                onEdit={() => handleEditNote(note)}
-                onDelete={() => handleDeleteNote(note.Id)}
-                viewMode={currentView}
-              />
-            </motion.div>
-          ))}
+          {currentView === 'calendar' ? (
+            <CalendarView
+              notes={sortedNotes}
+              onEditNote={handleEditNote}
+              onDeleteNote={handleDeleteNote}
+            />
+          ) : (
+            <div className={`${
+              currentView === 'grid' 
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                : 'space-y-4'
+            }`}>
+              {sortedNotes.map((note, index) => (
+                <motion.div
+                  key={note.Id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className={currentView === 'list' ? 'w-full' : ''}
+                >
+                  <NoteCard
+                    note={note}
+                    onClick={() => handleEditNote(note)}
+                    onEdit={() => handleEditNote(note)}
+                    onDelete={() => handleDeleteNote(note.Id)}
+                    viewMode={currentView}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          )}
         </motion.div>
       )}
 
