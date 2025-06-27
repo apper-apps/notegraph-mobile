@@ -120,48 +120,52 @@ setError('')
   if (error) return <Error message={error} onRetry={loadNotes} />
 
   return (
-    <div className="space-y-6">
+<div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold text-gray-900 font-display">Calendar</h1>
-          <p className="text-gray-600">View your notes and tasks by date</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold text-gray-900 font-display">Calendar</h1>
+          <p className="text-gray-600 text-lg">View your notes and tasks by date</p>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-4">
           <Button
             onClick={handleCreateEvent}
             icon="Plus"
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 shadow-lg hover:shadow-xl"
           >
             Add Event
           </Button>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+{/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg p-4 text-white"
+          whileHover={{ y: -4, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl p-6 text-white shadow-soft hover:shadow-medium transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-primary-100 text-sm">Total Events</p>
-              <p className="text-2xl font-bold">{notes.length}</p>
+              <p className="text-primary-100 text-sm font-medium">Total Events</p>
+              <p className="text-3xl font-bold mt-1">{notes.length}</p>
             </div>
-            <ApperIcon name="Calendar" size={24} className="text-primary-200" />
+            <div className="bg-white bg-opacity-20 rounded-xl p-3">
+              <ApperIcon name="Calendar" size={28} className="text-white" />
+            </div>
           </div>
         </motion.div>
 
         <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-4 text-white"
+          whileHover={{ y: -4, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-soft hover:shadow-medium transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-green-100 text-sm">This Month</p>
-              <p className="text-2xl font-bold">
+              <p className="text-green-100 text-sm font-medium">This Month</p>
+              <p className="text-3xl font-bold mt-1">
                 {notes.filter(note => {
                   const noteDate = new Date(note.date)
                   const now = new Date()
@@ -170,20 +174,25 @@ setError('')
                 }).length}
               </p>
             </div>
-            <ApperIcon name="TrendingUp" size={24} className="text-green-200" />
+            <div className="bg-white bg-opacity-20 rounded-xl p-3">
+              <ApperIcon name="TrendingUp" size={28} className="text-white" />
+            </div>
           </div>
         </motion.div>
 
         <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-gradient-to-br from-accent-500 to-accent-600 rounded-lg p-4 text-white"
+          whileHover={{ y: -4, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-gradient-to-br from-accent-500 to-accent-600 rounded-2xl p-6 text-white shadow-soft hover:shadow-medium transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-accent-100 text-sm">Upcoming</p>
-              <p className="text-2xl font-bold">{upcomingEvents.length}</p>
+              <p className="text-accent-100 text-sm font-medium">Upcoming</p>
+              <p className="text-3xl font-bold mt-1">{upcomingEvents.length}</p>
             </div>
-            <ApperIcon name="Clock" size={24} className="text-accent-200" />
+            <div className="bg-white bg-opacity-20 rounded-xl p-3">
+              <ApperIcon name="Clock" size={28} className="text-white" />
+            </div>
           </div>
         </motion.div>
       </div>
@@ -208,12 +217,13 @@ setError('')
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Upcoming Events */}
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
-            <h3 className="text-lg font-semibold text-gray-900 font-display mb-4 flex items-center space-x-2">
-              <ApperIcon name="Clock" size={20} className="text-primary-600" />
+<div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-soft">
+            <h3 className="text-xl font-semibold text-gray-900 font-display mb-6 flex items-center space-x-3">
+              <div className="bg-primary-100 rounded-xl p-2">
+                <ApperIcon name="Clock" size={20} className="text-primary-600" />
+              </div>
               <span>Upcoming Events</span>
             </h3>
-
             {upcomingEvents.length === 0 ? (
               <div className="text-center py-6 text-gray-500">
                 <ApperIcon name="Calendar" size={32} className="mx-auto mb-2 text-gray-400" />
@@ -264,11 +274,10 @@ setError('')
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
-            <h3 className="text-lg font-semibold text-gray-900 font-display mb-4">
+<div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-soft">
+            <h3 className="text-xl font-semibold text-gray-900 font-display mb-6">
               Quick Actions
             </h3>
-            
             <div className="space-y-2">
               <Button
                 variant="ghost"

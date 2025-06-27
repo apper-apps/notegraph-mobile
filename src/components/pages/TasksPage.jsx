@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { toast } from 'react-toastify'
-import { motion } from 'framer-motion'
-import ApperIcon from '@/components/ApperIcon'
-import Button from '@/components/atoms/Button'
-import NoteCard from '@/components/molecules/NoteCard'
-import NoteEditor from '@/components/organisms/NoteEditor'
-import Loading from '@/components/ui/Loading'
-import Error from '@/components/ui/Error'
-import Empty from '@/components/ui/Empty'
-import { noteService } from '@/services/api/noteService'
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import ApperIcon from "@/components/ApperIcon";
+import NoteEditor from "@/components/organisms/NoteEditor";
+import Button from "@/components/atoms/Button";
+import NoteCard from "@/components/molecules/NoteCard";
+import Error from "@/components/ui/Error";
+import Empty from "@/components/ui/Empty";
+import Loading from "@/components/ui/Loading";
+import { noteService } from "@/services/api/noteService";
 
 const TasksPage = () => {
   const [tasks, setTasks] = useState([])
@@ -131,19 +131,19 @@ case 'created':
   if (error) return <Error message={error} onRetry={loadTasks} />
 
   return (
-    <div className="space-y-6">
+<div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold text-gray-900 font-display">Tasks</h1>
-          <p className="text-gray-600">Stay organized and get things done</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold text-gray-900 font-display">Tasks</h1>
+          <p className="text-gray-600 text-lg">Stay organized and get things done</p>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-4">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
           >
             <option value="updated">Last Updated</option>
             <option value="created">Date Created</option>
@@ -154,7 +154,7 @@ case 'created':
           <Button
             onClick={handleCreateTask}
             icon="Plus"
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 shadow-lg hover:shadow-xl"
           >
             Create Task
           </Button>
@@ -162,69 +162,81 @@ case 'created':
       </div>
 
 {/* Filters */}
-      <div className="flex items-center space-x-4">
-        <label className="flex items-center space-x-2">
+      <div className="bg-white rounded-2xl p-6 shadow-soft border border-gray-100">
+        <label className="flex items-center space-x-3">
           <input
             type="checkbox"
             checked={showCompleted}
             onChange={(e) => setShowCompleted(e.target.checked)}
-            className="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+            className="w-5 h-5 text-primary-600 focus:ring-primary-500 border-gray-300 rounded-md"
           />
-          <span className="text-sm text-gray-700">Show completed tasks</span>
+          <span className="text-gray-700 font-medium">Show completed tasks</span>
         </label>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+{/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg p-4 text-white"
+          whileHover={{ y: -4, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl p-6 text-white shadow-soft hover:shadow-medium transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-primary-100 text-sm">Total Tasks</p>
-              <p className="text-2xl font-bold">{tasks.length}</p>
+              <p className="text-primary-100 text-sm font-medium">Total Tasks</p>
+              <p className="text-3xl font-bold mt-1">{tasks.length}</p>
             </div>
-            <ApperIcon name="CheckSquare" size={24} className="text-primary-200" />
+            <div className="bg-white bg-opacity-20 rounded-xl p-3">
+              <ApperIcon name="CheckSquare" size={28} className="text-white" />
+            </div>
           </div>
         </motion.div>
 
         <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-4 text-white"
+          whileHover={{ y: -4, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-soft hover:shadow-medium transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-green-100 text-sm">Completed</p>
-              <p className="text-2xl font-bold">{completedTasks.length}</p>
+              <p className="text-green-100 text-sm font-medium">Completed</p>
+              <p className="text-3xl font-bold mt-1">{completedTasks.length}</p>
             </div>
-            <ApperIcon name="CheckCircle" size={24} className="text-green-200" />
+            <div className="bg-white bg-opacity-20 rounded-xl p-3">
+              <ApperIcon name="CheckCircle" size={28} className="text-white" />
+            </div>
           </div>
         </motion.div>
 
         <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-gradient-to-br from-red-500 to-red-600 rounded-lg p-4 text-white"
+          whileHover={{ y: -4, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-gradient-to-br from-red-500 to-red-600 rounded-2xl p-6 text-white shadow-soft hover:shadow-medium transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-red-100 text-sm">Overdue</p>
-              <p className="text-2xl font-bold">{overdueTasks.length}</p>
+              <p className="text-red-100 text-sm font-medium">Overdue</p>
+              <p className="text-3xl font-bold mt-1">{overdueTasks.length}</p>
             </div>
-            <ApperIcon name="AlertCircle" size={24} className="text-red-200" />
+            <div className="bg-white bg-opacity-20 rounded-xl p-3">
+              <ApperIcon name="AlertCircle" size={28} className="text-white" />
+            </div>
           </div>
         </motion.div>
 
         <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-gradient-to-br from-accent-500 to-accent-600 rounded-lg p-4 text-white"
+          whileHover={{ y: -4, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-gradient-to-br from-accent-500 to-accent-600 rounded-2xl p-6 text-white shadow-soft hover:shadow-medium transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-accent-100 text-sm">In Progress</p>
-              <p className="text-2xl font-bold">{tasks.length - completedTasks.length}</p>
+              <p className="text-accent-100 text-sm font-medium">In Progress</p>
+              <p className="text-3xl font-bold mt-1">{tasks.length - completedTasks.length}</p>
             </div>
-            <ApperIcon name="Clock" size={24} className="text-accent-200" />
+            <div className="bg-white bg-opacity-20 rounded-xl p-3">
+              <ApperIcon name="Clock" size={28} className="text-white" />
+            </div>
           </div>
         </motion.div>
       </div>
@@ -236,13 +248,13 @@ case 'created':
           onAction={handleCreateTask}
         />
       ) : (
-        <motion.div
+<motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className={`${
             currentView === 'grid' 
-              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-              : 'space-y-4'
+              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
+              : 'space-y-6'
           }`}
         >
           {sortedTasks.map((task, index) => (

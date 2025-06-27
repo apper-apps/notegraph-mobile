@@ -104,19 +104,19 @@ case 'updated':
   if (error) return <Error message={error} onRetry={loadNotes} />
 
   return (
-    <div className="space-y-6">
+<div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold text-gray-900 font-display">Notes</h1>
-          <p className="text-gray-600">Capture and organize your thoughts</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold text-gray-900 font-display">Notes</h1>
+          <p className="text-gray-600 text-lg">Capture and organize your thoughts</p>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-4">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
           >
             <option value="updated">Last Updated</option>
             <option value="created">Date Created</option>
@@ -126,54 +126,63 @@ case 'updated':
           <Button
             onClick={handleCreateNote}
             icon="Plus"
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 shadow-lg hover:shadow-xl"
           >
             Create Note
           </Button>
         </div>
       </div>
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+{/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg p-4 text-white"
+          whileHover={{ y: -4, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl p-6 text-white shadow-soft hover:shadow-medium transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-primary-100 text-sm">Total Notes</p>
-              <p className="text-2xl font-bold">{notes.length}</p>
+              <p className="text-primary-100 text-sm font-medium">Total Notes</p>
+              <p className="text-3xl font-bold mt-1">{notes.length}</p>
             </div>
-            <ApperIcon name="FileText" size={24} className="text-primary-200" />
+            <div className="bg-white bg-opacity-20 rounded-xl p-3">
+              <ApperIcon name="FileText" size={28} className="text-white" />
+            </div>
           </div>
         </motion.div>
 
         <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-gradient-to-br from-accent-500 to-accent-600 rounded-lg p-4 text-white"
+          whileHover={{ y: -4, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-gradient-to-br from-accent-500 to-accent-600 rounded-2xl p-6 text-white shadow-soft hover:shadow-medium transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-accent-100 text-sm">Tagged Notes</p>
-              <p className="text-2xl font-bold">
+              <p className="text-accent-100 text-sm font-medium">Tagged Notes</p>
+              <p className="text-3xl font-bold mt-1">
                 {notes.filter(note => note.tags && note.tags.length > 0).length}
               </p>
             </div>
-            <ApperIcon name="Tag" size={24} className="text-accent-200" />
+            <div className="bg-white bg-opacity-20 rounded-xl p-3">
+              <ApperIcon name="Tag" size={28} className="text-white" />
+            </div>
           </div>
         </motion.div>
 
         <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-4 text-white"
+          whileHover={{ y: -4, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-soft hover:shadow-medium transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-green-100 text-sm">With Dates</p>
-              <p className="text-2xl font-bold">
+              <p className="text-green-100 text-sm font-medium">With Dates</p>
+              <p className="text-3xl font-bold mt-1">
                 {notes.filter(note => note.date).length}
               </p>
             </div>
-            <ApperIcon name="Calendar" size={24} className="text-green-200" />
+            <div className="bg-white bg-opacity-20 rounded-xl p-3">
+              <ApperIcon name="Calendar" size={28} className="text-white" />
+            </div>
           </div>
         </motion.div>
       </div>
@@ -194,11 +203,11 @@ case 'updated':
               onEditNote={handleEditNote}
               onDeleteNote={handleDeleteNote}
             />
-          ) : (
+) : (
             <div className={`${
               currentView === 'grid' 
-                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-                : 'space-y-4'
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
+                : 'space-y-6'
             }`}>
               {sortedNotes.map((note, index) => (
                 <motion.div

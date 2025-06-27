@@ -148,19 +148,19 @@ const filteredNotes = notes.filter(note => {
   if (error) return <Error message={error} onRetry={loadNotes} />
 
   return (
-    <div className="space-y-6">
+<div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold text-gray-900 font-display">Knowledge Graph</h1>
-          <p className="text-gray-600">Visualize connections between your notes and tasks</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold text-gray-900 font-display">Knowledge Graph</h1>
+          <p className="text-gray-600 text-lg">Visualize connections between your notes and tasks</p>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-4">
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
           >
             <option value="all">All Items</option>
             <option value="notes">Notes Only</option>
@@ -170,10 +170,10 @@ const filteredNotes = notes.filter(note => {
           <Button
             onClick={handleCreateNote}
             icon="Plus"
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 shadow-lg hover:shadow-xl"
           >
             Add Node
-</Button>
+          </Button>
         </div>
       </div>
 
@@ -190,67 +190,79 @@ const filteredNotes = notes.filter(note => {
         className="mb-4"
       />
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+{/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg p-4 text-white"
+          whileHover={{ y: -4, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl p-6 text-white shadow-soft hover:shadow-medium transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-primary-100 text-sm">Total Nodes</p>
-              <p className="text-2xl font-bold">{filteredNotes.length}</p>
+              <p className="text-primary-100 text-sm font-medium">Total Nodes</p>
+              <p className="text-3xl font-bold mt-1">{filteredNotes.length}</p>
             </div>
-            <ApperIcon name="Network" size={24} className="text-primary-200" />
+            <div className="bg-white bg-opacity-20 rounded-xl p-3">
+              <ApperIcon name="Network" size={28} className="text-white" />
+            </div>
           </div>
         </motion.div>
 
         <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-4 text-white"
+          whileHover={{ y: -4, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-soft hover:shadow-medium transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-green-100 text-sm">Connections</p>
-              <p className="text-2xl font-bold">{stats.totalConnections}</p>
+              <p className="text-green-100 text-sm font-medium">Connections</p>
+              <p className="text-3xl font-bold mt-1">{stats.totalConnections}</p>
             </div>
-            <ApperIcon name="GitBranch" size={24} className="text-green-200" />
+            <div className="bg-white bg-opacity-20 rounded-xl p-3">
+              <ApperIcon name="GitBranch" size={28} className="text-white" />
+            </div>
           </div>
         </motion.div>
 
         <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-gradient-to-br from-accent-500 to-accent-600 rounded-lg p-4 text-white"
+          whileHover={{ y: -4, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-gradient-to-br from-accent-500 to-accent-600 rounded-2xl p-6 text-white shadow-soft hover:shadow-medium transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-accent-100 text-sm">Tagged Items</p>
-              <p className="text-2xl font-bold">
+              <p className="text-accent-100 text-sm font-medium">Tagged Items</p>
+              <p className="text-3xl font-bold mt-1">
                 {notes.filter(note => note.tags && note.tags.length > 0).length}
               </p>
             </div>
-            <ApperIcon name="Tag" size={24} className="text-accent-200" />
+            <div className="bg-white bg-opacity-20 rounded-xl p-3">
+              <ApperIcon name="Tag" size={28} className="text-white" />
+            </div>
           </div>
         </motion.div>
 
         <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-4 text-white"
+          whileHover={{ y: -4, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-soft hover:shadow-medium transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-purple-100 text-sm">Top Tag</p>
-              <p className="text-sm font-bold truncate">
+              <p className="text-purple-100 text-sm font-medium">Top Tag</p>
+              <p className="text-lg font-bold truncate mt-1">
                 {stats.mostConnectedTag || 'None'}
               </p>
             </div>
-            <ApperIcon name="Star" size={24} className="text-purple-200" />
+            <div className="bg-white bg-opacity-20 rounded-xl p-3">
+              <ApperIcon name="Star" size={28} className="text-white" />
+            </div>
           </div>
         </motion.div>
       </div>
 
-      {/* Graph Visualization */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+{/* Graph Visualization */}
+      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-soft">
         {filteredNotes.length === 0 ? (
           <Empty
             type="graph"
@@ -270,9 +282,11 @@ const filteredNotes = notes.filter(note => {
       {/* Graph Insights */}
       {notes.length > 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 font-display mb-4 flex items-center space-x-2">
-              <ApperIcon name="TrendingUp" size={20} className="text-primary-600" />
+<div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-soft">
+            <h3 className="text-xl font-semibold text-gray-900 font-display mb-6 flex items-center space-x-3">
+              <div className="bg-primary-100 rounded-xl p-2">
+                <ApperIcon name="TrendingUp" size={20} className="text-primary-600" />
+              </div>
               <span>Connection Insights</span>
             </h3>
 
@@ -307,9 +321,11 @@ const filteredNotes = notes.filter(note => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 font-display mb-4 flex items-center space-x-2">
-              <ApperIcon name="Tag" size={20} className="text-accent-600" />
+<div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-soft">
+            <h3 className="text-xl font-semibold text-gray-900 font-display mb-6 flex items-center space-x-3">
+              <div className="bg-accent-100 rounded-xl p-2">
+                <ApperIcon name="Tag" size={20} className="text-accent-600" />
+              </div>
               <span>Popular Tags</span>
             </h3>
 

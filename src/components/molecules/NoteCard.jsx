@@ -25,11 +25,11 @@ const NoteCard = ({
   const tagColors = ['primary', 'accent', 'green', 'blue', 'purple', 'pink']
   
   return (
-    <motion.div
-      whileHover={{ y: -2, shadow: "0 8px 25px rgba(0,0,0,0.1)" }}
+<motion.div
+      whileHover={{ y: -4, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={handleCardClick}
-      className={`bg-white rounded-lg border border-gray-200 p-4 cursor-pointer transition-all duration-200 hover:border-primary-300 ${className}`}
+      className={`bg-white rounded-2xl border border-gray-100 p-6 cursor-pointer transition-all duration-300 hover:border-primary-300 hover:shadow-medium shadow-soft ${className}`}
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center space-x-2">
@@ -57,15 +57,15 @@ const NoteCard = ({
         </div>
 
         <div className="flex items-center space-x-1">
-          <button
+<button
             onClick={(e) => handleActionClick(e, () => onEdit?.(note))}
-            className="p-1 hover:bg-gray-100 rounded-full transition-colors duration-150"
+            className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors duration-200"
           >
             <ApperIcon name="Edit2" size={14} className="text-gray-400 hover:text-gray-600" />
           </button>
-          <button
+<button
             onClick={(e) => handleActionClick(e, () => onDelete?.(note.Id))}
-            className="p-1 hover:bg-red-100 rounded-full transition-colors duration-150"
+            className="p-1.5 hover:bg-red-100 rounded-lg transition-colors duration-200"
           >
             <ApperIcon name="Trash2" size={14} className="text-gray-400 hover:text-red-600" />
           </button>
