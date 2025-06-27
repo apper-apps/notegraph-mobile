@@ -8,6 +8,7 @@ import NoteEditor from '@/components/organisms/NoteEditor'
 import Loading from '@/components/ui/Loading'
 import Error from '@/components/ui/Error'
 import Empty from '@/components/ui/Empty'
+import SearchBar from '@/components/molecules/SearchBar'
 import { noteService } from '@/services/api/noteService'
 
 const GraphPage = () => {
@@ -15,10 +16,12 @@ const GraphPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [isEditorOpen, setIsEditorOpen] = useState(false)
-  const [editingNote, setEditingNote] = useState(null)
+const [editingNote, setEditingNote] = useState(null)
   const [selectedNode, setSelectedNode] = useState(null)
   const [filterType, setFilterType] = useState('all') // all, notes, tasks
-
+  const [selectedTags, setSelectedTags] = useState([])
+  const [dateRange, setDateRange] = useState({ start: '', end: '' })
+  const [selectedFolder, setSelectedFolder] = useState('')
   useEffect(() => {
     loadNotes()
   }, [])
@@ -62,9 +65,14 @@ const GraphPage = () => {
     } catch (error) {
       toast.error('Failed to save item. Please try again.')
       console.error('Error saving note:', error)
-    }
+}
   }
 
+  const handleFilterChange = (filters) => {
+    setSelectedTags(filters.tags || [])
+    setDateRange(filters.dateRange || { start: '', end: '' })
+    setSelectedFolder(filters.folder || '')
+  }
   const handleDeleteNote = async (noteId) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
       try {
@@ -79,9 +87,28 @@ const GraphPage = () => {
     }
   }
 
-  const filteredNotes = notes.filter(note => {
-    if (filterType === 'notes') return note.type === 'note'
-    if (filterType === 'tasks') return note.type === 'task'
+const filteredNotes = notes.filter(note => {
+    // Type filter
+    if (filterType === 'notes' && note.type !== 'note') return false
+    if (filterType === 'tasks' && note.type !== 'task') return false
+    
+    // Tag filter - note must have ALL selected tags
+    if (selectedTags.length > 0) {
+      const noteTags = note.tags || []
+      const hasAllTags = selectedTags.every(tag => noteTags.includes(tag))
+      if (!hasAllTags) return false
+    }
+    
+    // Date range filter
+    if (dateRange.start || dateRange.end) {
+      const noteDate = new Date(note.createdAt)
+      if (dateRange.start && noteDate < new Date(dateRange.start)) return false
+      if (dateRange.end && noteDate > new Date(dateRange.end)) return false
+    }
+    
+    // Folder filter
+    if (selectedFolder && note.folder !== selectedFolder) return false
+    
     return true
   })
 
@@ -146,9 +173,22 @@ const GraphPage = () => {
             className="flex items-center space-x-2"
           >
             Add Node
-          </Button>
+</Button>
         </div>
       </div>
+
+      {/* Advanced Filters */}
+      <SearchBar
+        placeholder="Search and filter graph nodes..."
+        onSearch={() => {}} // Search not implemented for graph view
+        onFilter={handleFilterChange}
+        filters={{
+          tags: selectedTags,
+          dateRange: dateRange,
+          folder: selectedFolder
+        }}
+        className="mb-4"
+      />
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
