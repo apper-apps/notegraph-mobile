@@ -106,7 +106,7 @@ useEffect(() => {
         initial={{ x: -320 }}
         animate={{ x: isOpen ? 0 : -320 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="fixed left-0 top-0 h-full w-80 bg-white border-r border-gray-200 z-50 lg:relative lg:translate-x-0 lg:z-auto lg:block shadow-xl lg:shadow-none flex-shrink-0"
+        className="fixed left-0 top-0 h-screen w-80 bg-white border-r border-gray-200 z-50 lg:relative lg:translate-x-0 lg:z-auto lg:flex shadow-xl lg:shadow-none flex-shrink-0"
       >
         <div className="flex flex-col h-full">
           {/* Header */}

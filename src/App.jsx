@@ -121,7 +121,7 @@ function App() {
   
 return (
     <AuthContext.Provider value={authMethods}>
-      <div className="h-screen w-screen bg-background font-body flex flex-col overflow-hidden">
+      <div className="h-screen w-screen bg-background font-body overflow-hidden">
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
