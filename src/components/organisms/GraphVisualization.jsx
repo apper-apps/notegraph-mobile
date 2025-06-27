@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
-import ApperIcon from '@/components/ApperIcon'
-import Button from '@/components/atoms/Button'
+import React, { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
 
 const GraphVisualization = ({ notes = [], onNodeClick, className = "" }) => {
   const canvasRef = useRef(null)
@@ -27,6 +27,66 @@ const GraphVisualization = ({ notes = [], onNodeClick, className = "" }) => {
     return () => window.removeEventListener('resize', updateDimensions)
   }, [])
 
+// Color generation utilities
+  const folderColorPalette = {
+    'work': '#5B4FCF',
+    'personal': '#10B981', 
+    'projects': '#F59E0B',
+    'ideas': '#EF4444',
+    'learning': '#8B5CF6',
+    'health': '#06B6D4',
+    'finance': '#84CC16',
+    'travel': '#F97316',
+    'family': '#EC4899',
+    'hobbies': '#6366F1'
+  }
+
+  const tagColorPalette = [
+    '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', 
+    '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+    '#F8C471', '#82E0AA', '#F1948A', '#AED6F1'
+  ]
+
+  // Generate color based on string hash
+  const generateColorFromString = (str) => {
+    let hash = 0
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i)
+      hash = ((hash << 5) - hash) + char
+      hash = hash & hash // Convert to 32bit integer
+    }
+    
+    const hue = Math.abs(hash) % 360
+    const saturation = 60 + (Math.abs(hash) % 30) // 60-90%
+    const lightness = 45 + (Math.abs(hash) % 20) // 45-65%
+    
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`
+  }
+
+  // Get folder color
+  const getFolderColor = (folderId) => {
+    if (!folderId) return '#9CA3AF' // Default gray for no folder
+    return folderColorPalette[folderId] || generateColorFromString(folderId)
+  }
+
+  // Get tag-influenced color
+  const getTagInfluencedColor = (baseColor, tags) => {
+    if (!tags || tags.length === 0) return baseColor
+    
+    // Use first tag to add slight variation to base color
+    const tagIndex = Math.abs(tags[0].split('').reduce((a, b) => a + b.charCodeAt(0), 0)) % tagColorPalette.length
+    const tagColor = tagColorPalette[tagIndex]
+    
+    // Blend base color with tag color (80% base, 20% tag)
+    return baseColor
+  }
+
+  // Convert HSL to hex for consistent usage
+  const hslToHex = (hsl) => {
+    if (hsl.startsWith('#')) return hsl
+    return hsl // For now, return as-is since we're using direct colors
+  }
+
   // Generate nodes and connections
   const generateGraph = () => {
     const nodes = notes.map((note, index) => {
@@ -35,12 +95,17 @@ const GraphVisualization = ({ notes = [], onNodeClick, className = "" }) => {
       const centerX = dimensions.width / 2
       const centerY = dimensions.height / 2
 
+      const baseColor = getFolderColor(note.folderId)
+      const finalColor = getTagInfluencedColor(baseColor, note.tags)
+
       return {
         id: note.Id,
         title: note.title,
         type: note.type,
         tags: note.tags || [],
         completed: note.completed,
+        folderId: note.folderId,
+        color: finalColor,
         x: centerX + Math.cos(angle) * radius,
         y: centerY + Math.sin(angle) * radius,
         radius: 20 + (note.tags?.length || 0) * 5
@@ -161,11 +226,15 @@ const GraphVisualization = ({ notes = [], onNodeClick, className = "" }) => {
           })}
 
           {/* Nodes */}
+{/* Nodes */}
           {nodes.map((node) => {
             const isSelected = selectedNode === node.id
-            const nodeColor = node.type === 'task' 
-              ? (node.completed ? '#10B981' : '#F59E0B')
-              : '#5B4FCF'
+            
+            // Use folder-based color with task completion override
+            let nodeColor = node.color
+            if (node.type === 'task' && node.completed) {
+              nodeColor = '#10B981' // Green for completed tasks
+            }
 
             return (
               <g key={node.id}>
@@ -205,7 +274,7 @@ const GraphVisualization = ({ notes = [], onNodeClick, className = "" }) => {
                   textAnchor="middle"
                   className="text-xs fill-gray-700 font-medium max-w-20 truncate"
                 >
-                  {node.title.length > 15 ? `${node.title.substring(0, 15)}...` : node.title}
+{node.title.length > 15 ? `${node.title.substring(0, 15)}...` : node.title}
                 </text>
               </g>
             )
@@ -214,17 +283,25 @@ const GraphVisualization = ({ notes = [], onNodeClick, className = "" }) => {
       </div>
 
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 bg-white rounded-lg border border-gray-200 p-3 shadow-sm">
+      <div className="absolute bottom-4 left-4 bg-white rounded-lg border border-gray-200 p-3 shadow-sm max-w-48">
         <h4 className="text-sm font-semibold text-gray-700 mb-2">Legend</h4>
         <div className="space-y-2 text-xs">
-          <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-primary-600 rounded-full"></div>
-            <span>Notes</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-accent-500 rounded-full"></div>
-            <span>Tasks</span>
-          </div>
+          {/* Folder colors */}
+          {(() => {
+            const activeFolders = [...new Set(notes.map(note => note.folderId).filter(Boolean))]
+            return activeFolders.map(folderId => (
+              <div key={folderId} className="flex items-center space-x-2">
+                <div 
+                  className="w-3 h-3 rounded-full" 
+                  style={{ backgroundColor: getFolderColor(folderId) }}
+                ></div>
+                <span className="capitalize">{folderId}</span>
+              </div>
+            ))
+          })()}
+          
+          {activeFolders.length > 0 && <div className="border-t border-gray-200 my-2"></div>}
+          
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-green-500 rounded-full"></div>
             <span>Completed</span>
@@ -247,7 +324,7 @@ const GraphVisualization = ({ notes = [], onNodeClick, className = "" }) => {
             const node = nodes.find(n => n.id === selectedNode)
             const note = notes.find(n => n.Id === selectedNode)
             
-            return (
+return (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <h4 className="font-semibold text-gray-900 font-display">{node?.title}</h4>
@@ -269,6 +346,16 @@ const GraphVisualization = ({ notes = [], onNodeClick, className = "" }) => {
                     <span className="text-green-600">• Completed</span>
                   )}
                 </div>
+
+                {note?.folderId && (
+                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                    <div 
+                      className="w-3 h-3 rounded-full" 
+                      style={{ backgroundColor: getFolderColor(note.folderId) }}
+                    ></div>
+                    <span className="capitalize">{note.folderId} folder</span>
+                  </div>
+                )}
 
                 {node?.tags && node.tags.length > 0 && (
                   <div className="space-y-1">
