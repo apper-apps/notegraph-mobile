@@ -1,26 +1,25 @@
-import React, { useState, useEffect } from 'react'
-import { toast } from 'react-toastify'
-import { motion } from 'framer-motion'
-import ApperIcon from '@/components/ApperIcon'
-import Button from '@/components/atoms/Button'
-import SearchBar from '@/components/molecules/SearchBar'
-import NoteCard from '@/components/molecules/NoteCard'
-import NoteEditor from '@/components/organisms/NoteEditor'
-import Loading from '@/components/ui/Loading'
-import Error from '@/components/ui/Error'
-import Empty from '@/components/ui/Empty'
-import { noteService } from '@/services/api/noteService'
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import { noteService } from "@/services/api/noteService";
+import ApperIcon from "@/components/ApperIcon";
+import NoteCard from "@/components/molecules/NoteCard";
+import NoteEditor from "@/components/organisms/NoteEditor";
+import Empty from "@/components/ui/Empty";
+import Loading from "@/components/ui/Loading";
+import Error from "@/components/ui/Error";
+import Button from "@/components/atoms/Button";
 
 const NotesPage = () => {
   const [notes, setNotes] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [searchTerm, setSearchTerm] = useState('')
-  const [filters, setFilters] = useState({})
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const [editingNote, setEditingNote] = useState(null)
   const [sortBy, setSortBy] = useState('updated')
-
+  
+  const { currentView, selectedFolder, selectedTags } = useSelector((state) => state.view)
   useEffect(() => {
     loadNotes()
   }, [])
@@ -79,27 +78,24 @@ const NotesPage = () => {
     }
   }
 
-  const filteredNotes = notes.filter(note => {
-    const matchesSearch = !searchTerm || 
-      note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      note.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      note.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+const filteredNotes = notes.filter(note => {
+    const matchesFolder = !selectedFolder || note.folder_id === selectedFolder
+    const matchesTags = selectedTags.length === 0 || 
+      (note.tags && Array.isArray(note.tags) && 
+       selectedTags.some(selectedTag => note.tags.includes(selectedTag)))
 
-    const matchesFolder = !filters.folder || note.folderId === filters.folder
-    const matchesDate = !filters.date || (note.date && note.date.includes(filters.date))
-
-    return matchesSearch && matchesFolder && matchesDate
+    return matchesFolder && matchesTags
   })
 
-  const sortedNotes = [...filteredNotes].sort((a, b) => {
+const sortedNotes = [...filteredNotes].sort((a, b) => {
     switch (sortBy) {
       case 'title':
         return a.title.localeCompare(b.title)
       case 'created':
-        return new Date(b.createdAt) - new Date(a.createdAt)
-      case 'updated':
+        return new Date(b.created_at) - new Date(a.created_at)
+case 'updated':
       default:
-        return new Date(b.updatedAt) - new Date(a.updatedAt)
+        return new Date(b.updated_at) - new Date(a.updated_at)
     }
   })
 
@@ -135,15 +131,6 @@ const NotesPage = () => {
           </Button>
         </div>
       </div>
-
-      {/* Search and Filters */}
-      <SearchBar
-        placeholder="Search notes by title, content, or tags..."
-        onSearch={setSearchTerm}
-        onFilter={setFilters}
-        filters={filters}
-      />
-
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <motion.div
@@ -189,8 +176,7 @@ const NotesPage = () => {
           </div>
         </motion.div>
       </div>
-
-      {/* Notes Grid */}
+{/* Notes Display */}
       {sortedNotes.length === 0 ? (
         <Empty
           type="notes"
@@ -200,7 +186,11 @@ const NotesPage = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className={`${
+            currentView === 'grid' 
+              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+              : 'space-y-4'
+          }`}
         >
           {sortedNotes.map((note, index) => (
             <motion.div
@@ -208,12 +198,14 @@ const NotesPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
+              className={currentView === 'list' ? 'w-full' : ''}
             >
               <NoteCard
                 note={note}
                 onClick={() => handleEditNote(note)}
                 onEdit={() => handleEditNote(note)}
                 onDelete={() => handleDeleteNote(note.Id)}
+                viewMode={currentView}
               />
             </motion.div>
           ))}

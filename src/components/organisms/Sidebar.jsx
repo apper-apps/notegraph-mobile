@@ -1,11 +1,20 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 import { motion } from 'framer-motion'
 import ApperIcon from '@/components/ApperIcon'
 import FolderTree from '@/components/molecules/FolderTree'
+import SearchBar from '@/components/molecules/SearchBar'
+import Button from '@/components/atoms/Button'
+import { setCurrentView, setSelectedFolder, toggleTag, clearFilters } from '@/store/viewSlice'
+import { noteService } from '@/services/api/noteService'
 
-const Sidebar = ({ isOpen, onClose }) => {
+const Sidebar = ({ isOpen, onClose, onCreateNote, onCreateTask }) => {
   const location = useLocation()
+  const dispatch = useDispatch()
+  const { currentView, selectedFolder, selectedTags } = useSelector((state) => state.view)
+  const [allNotes, setAllNotes] = useState([])
+  const [searchTerm, setSearchTerm] = useState('')
 
   const navigationItems = [
     { to: '/notes', icon: 'FileText', label: 'Notes' },
@@ -14,6 +23,23 @@ const Sidebar = ({ isOpen, onClose }) => {
     { to: '/graph', icon: 'Network', label: 'Graph' },
     { to: '/search', icon: 'Search', label: 'Search' }
   ]
+
+  const viewOptions = [
+    { value: 'grid', icon: 'Grid3X3', label: 'Grid' },
+    { value: 'list', icon: 'List', label: 'List' },
+    { value: 'calendar', icon: 'Calendar', label: 'Calendar' }
+  ]
+useEffect(() => {
+    const loadNotes = async () => {
+      try {
+        const data = await noteService.getAll()
+        setAllNotes(data)
+      } catch (error) {
+        console.error('Error loading notes for sidebar:', error)
+      }
+    }
+    loadNotes()
+  }, [])
 
   const folders = [
     { 
@@ -35,6 +61,33 @@ const Sidebar = ({ isOpen, onClose }) => {
     { id: 'archive', name: 'Archive' }
   ]
 
+  // Extract unique tags from all notes
+  const allTags = [...new Set(
+    allNotes
+      .filter(note => note.tags && Array.isArray(note.tags))
+      .flatMap(note => note.tags)
+      .filter(tag => tag && tag.trim())
+  )].sort()
+
+  const handleViewChange = (view) => {
+    dispatch(setCurrentView(view))
+  }
+
+  const handleFolderSelect = (folderId) => {
+    dispatch(setSelectedFolder(folderId === selectedFolder ? null : folderId))
+  }
+
+  const handleTagToggle = (tag) => {
+    dispatch(toggleTag(tag))
+  }
+
+  const handleClearFilters = () => {
+    dispatch(clearFilters())
+    setSearchTerm('')
+  }
+
+  const currentPage = location.pathname.slice(1) || 'notes'
+  const showViewOptions = ['notes', 'tasks'].includes(currentPage)
   return (
     <>
       {/* Mobile Overlay */}
@@ -73,8 +126,8 @@ const Sidebar = ({ isOpen, onClose }) => {
             </button>
           </div>
 
-          {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+{/* Navigation */}
+          <nav className="px-4 py-6 space-y-2">
             {navigationItems.map((item) => (
               <NavLink
                 key={item.to}
@@ -94,16 +147,119 @@ const Sidebar = ({ isOpen, onClose }) => {
             ))}
           </nav>
 
-          {/* Folders Section */}
-          <div className="px-4 py-4 border-t border-gray-200">
+          {/* Search Bar */}
+          <div className="px-4 pb-4">
+            <SearchBar 
+              placeholder="Search notes and tasks..."
+              onSearch={setSearchTerm}
+              value={searchTerm}
+            />
+          </div>
+
+          {/* View Options */}
+          {showViewOptions && (
+            <div className="px-4 pb-4">
+              <h3 className="text-sm font-semibold text-gray-700 font-display mb-3">View Options</h3>
+              <div className="grid grid-cols-3 gap-1">
+                {viewOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => handleViewChange(option.value)}
+                    className={`p-2 rounded-lg transition-all duration-150 text-xs flex flex-col items-center space-y-1 ${
+                      currentView === option.value
+                        ? 'bg-primary-100 text-primary-700 border border-primary-200'
+                        : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    <ApperIcon name={option.icon} size={16} />
+                    <span>{option.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Quick Actions */}
+          <div className="px-4 pb-4">
+            <h3 className="text-sm font-semibold text-gray-700 font-display mb-3">Quick Actions</h3>
+            <div className="space-y-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                icon="FileText"
+                onClick={onCreateNote}
+                className="w-full justify-start text-left"
+              >
+                Create Note
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                icon="CheckSquare"
+                onClick={onCreateTask}
+                className="w-full justify-start text-left"
+              >
+                Create Task
+              </Button>
+            </div>
+          </div>
+{/* Folders Section */}
+          <div className="px-4 pb-4 border-t border-gray-200 pt-4">
             <FolderTree 
               folders={folders}
-              selectedFolder={null}
-              onFolderSelect={(folderId) => console.log('Selected folder:', folderId)}
+              selectedFolder={selectedFolder}
+              onFolderSelect={handleFolderSelect}
               onFolderCreate={() => console.log('Create folder')}
               onFolderEdit={(id, name) => console.log('Edit folder:', id, name)}
               onFolderDelete={(id) => console.log('Delete folder:', id)}
             />
+          </div>
+
+          {/* Tags Section */}
+          <div className="px-4 pb-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-gray-700 font-display">Tags</h3>
+              {selectedTags.length > 0 && (
+                <button
+                  onClick={handleClearFilters}
+                  className="text-xs text-gray-500 hover:text-gray-700"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+            
+            <div className="max-h-32 overflow-y-auto">
+              {allTags.length === 0 ? (
+                <p className="text-xs text-gray-500 italic">No tags found</p>
+              ) : (
+                <div className="space-y-1">
+                  {allTags.map((tag) => (
+                    <button
+                      key={tag}
+                      onClick={() => handleTagToggle(tag)}
+                      className={`block w-full text-left px-2 py-1 text-xs rounded transition-colors duration-150 ${
+                        selectedTags.includes(tag)
+                          ? 'bg-primary-100 text-primary-700'
+                          : 'text-gray-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      <span className="inline-flex items-center space-x-1">
+                        <ApperIcon 
+                          name="Tag" 
+                          size={10} 
+                          className={selectedTags.includes(tag) ? 'text-primary-600' : 'text-gray-400'} 
+                        />
+                        <span>{tag}</span>
+                        {selectedTags.includes(tag) && (
+                          <ApperIcon name="Check" size={10} className="text-primary-600" />
+                        )}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Footer */}

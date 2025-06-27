@@ -6,7 +6,7 @@ import SearchBar from '@/components/molecules/SearchBar'
 import Button from '@/components/atoms/Button'
 import { AuthContext } from '../../App'
 
-const Header = ({ onMenuToggle, onCreateNote, onCreateTask, title = "Dashboard" }) => {
+const Header = ({ onMenuToggle, title = "Dashboard" }) => {
   const { logout } = useContext(AuthContext)
   const { user } = useSelector((state) => state.user)
 
@@ -28,39 +28,10 @@ const Header = ({ onMenuToggle, onCreateNote, onCreateTask, title = "Dashboard" 
           </div>
         </div>
 
-        {/* Center Section - Search */}
-        <div className="hidden md:block flex-1 max-w-md mx-8">
-          <SearchBar 
-            placeholder="Search notes, tasks, and tags..."
-            onSearch={(term) => console.log('Search:', term)}
-            onFilter={(filters) => console.log('Filter:', filters)}
-          />
-        </div>
-
         {/* Right Section */}
-<div className="flex items-center space-x-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            icon="Plus"
-            onClick={onCreateNote}
-            className="hidden sm:flex"
-          >
-            Note
-          </Button>
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            icon="CheckSquare"
-            onClick={onCreateTask}
-            className="hidden sm:flex"
-          >
-            Task
-          </Button>
-
+        <div className="flex items-center space-x-3">
 <div className="flex items-center space-x-2">
-            <motion.button
+<motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-150 relative"
@@ -104,16 +75,7 @@ const Header = ({ onMenuToggle, onCreateNote, onCreateTask, title = "Dashboard" 
           </div>
         </div>
       </div>
-
-      {/* Mobile Search */}
-      <div className="md:hidden mt-4">
-        <SearchBar 
-          placeholder="Search notes, tasks, and tags..."
-          onSearch={(term) => console.log('Search:', term)}
-          onFilter={(filters) => console.log('Filter:', filters)}
-        />
-      </div>
-    </header>
+</header>
   )
 }
 

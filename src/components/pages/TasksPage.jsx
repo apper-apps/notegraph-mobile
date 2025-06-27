@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { motion } from 'framer-motion'
 import ApperIcon from '@/components/ApperIcon'
 import Button from '@/components/atoms/Button'
-import SearchBar from '@/components/molecules/SearchBar'
 import NoteCard from '@/components/molecules/NoteCard'
 import NoteEditor from '@/components/organisms/NoteEditor'
 import Loading from '@/components/ui/Loading'
@@ -15,13 +15,12 @@ const TasksPage = () => {
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [searchTerm, setSearchTerm] = useState('')
-  const [filters, setFilters] = useState({})
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const [editingTask, setEditingTask] = useState(null)
   const [sortBy, setSortBy] = useState('updated')
   const [showCompleted, setShowCompleted] = useState(true)
-
+  
+  const { currentView, selectedFolder, selectedTags } = useSelector((state) => state.view)
   useEffect(() => {
     loadTasks()
   }, [])
@@ -96,17 +95,14 @@ const TasksPage = () => {
     }
   }
 
-  const filteredTasks = tasks.filter(task => {
-    const matchesSearch = !searchTerm || 
-      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-
-    const matchesFolder = !filters.folder || task.folderId === filters.folder
-    const matchesDate = !filters.date || (task.date && task.date.includes(filters.date))
+const filteredTasks = tasks.filter(task => {
+    const matchesFolder = !selectedFolder || task.folder_id === selectedFolder
+    const matchesTags = selectedTags.length === 0 || 
+      (task.tags && Array.isArray(task.tags) && 
+       selectedTags.some(selectedTag => task.tags.includes(selectedTag)))
     const matchesCompletion = showCompleted || !task.completed
 
-    return matchesSearch && matchesFolder && matchesDate && matchesCompletion
+    return matchesFolder && matchesTags && matchesCompletion
   })
 
   const sortedTasks = [...filteredTasks].sort((a, b) => {
@@ -118,11 +114,11 @@ const TasksPage = () => {
         if (!a.date) return 1
         if (!b.date) return -1
         return new Date(a.date) - new Date(b.date)
-      case 'created':
-        return new Date(b.createdAt) - new Date(a.createdAt)
+case 'created':
+        return new Date(b.created_at) - new Date(a.created_at)
       case 'updated':
       default:
-        return new Date(b.updatedAt) - new Date(a.updatedAt)
+        return new Date(b.updated_at) - new Date(a.updated_at)
     }
   })
 
@@ -165,26 +161,17 @@ const TasksPage = () => {
         </div>
       </div>
 
-      {/* Search and Filters */}
-      <div className="space-y-4">
-        <SearchBar
-          placeholder="Search tasks by title, content, or tags..."
-          onSearch={setSearchTerm}
-          onFilter={setFilters}
-          filters={filters}
-        />
-
-        <div className="flex items-center space-x-4">
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              checked={showCompleted}
-              onChange={(e) => setShowCompleted(e.target.checked)}
-              className="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-            />
-            <span className="text-sm text-gray-700">Show completed tasks</span>
-          </label>
-        </div>
+{/* Filters */}
+      <div className="flex items-center space-x-4">
+        <label className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            checked={showCompleted}
+            onChange={(e) => setShowCompleted(e.target.checked)}
+            className="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+          />
+          <span className="text-sm text-gray-700">Show completed tasks</span>
+        </label>
       </div>
 
       {/* Stats */}
@@ -242,7 +229,7 @@ const TasksPage = () => {
         </motion.div>
       </div>
 
-      {/* Tasks Grid */}
+{/* Tasks Display */}
       {sortedTasks.length === 0 ? (
         <Empty
           type="tasks"
@@ -252,7 +239,11 @@ const TasksPage = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className={`${
+            currentView === 'grid' 
+              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+              : 'space-y-4'
+          }`}
         >
           {sortedTasks.map((task, index) => (
             <motion.div
@@ -260,6 +251,7 @@ const TasksPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
+              className={currentView === 'list' ? 'w-full' : ''}
             >
               <NoteCard
                 note={task}
@@ -267,6 +259,7 @@ const TasksPage = () => {
                 onEdit={() => handleEditTask(task)}
                 onDelete={() => handleDeleteTask(task.Id)}
                 onToggleComplete={handleToggleComplete}
+                viewMode={currentView}
               />
             </motion.div>
           ))}

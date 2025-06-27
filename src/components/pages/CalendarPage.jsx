@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { motion } from 'framer-motion'
 import { format } from 'date-fns'
@@ -18,18 +19,27 @@ const CalendarPage = () => {
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const [editingNote, setEditingNote] = useState(null)
   const [selectedDate, setSelectedDate] = useState(null)
-
-  useEffect(() => {
+  
+  const { selectedFolder, selectedTags } = useSelector((state) => state.view)
+useEffect(() => {
     loadNotes()
-  }, [])
-
+  }, [selectedFolder, selectedTags])
   const loadNotes = async () => {
     try {
       setLoading(true)
-      setError('')
+setError('')
       const data = await noteService.getAll()
-      // Only show notes/tasks that have dates
-      setNotes(data.filter(item => item.date))
+      // Only show notes/tasks that have dates and match current filters
+      const filteredData = data.filter(item => {
+        const hasDate = item.date
+        const matchesFolder = !selectedFolder || item.folder_id === selectedFolder
+        const matchesTags = selectedTags.length === 0 || 
+          (item.tags && Array.isArray(item.tags) && 
+           selectedTags.some(selectedTag => item.tags.includes(selectedTag)))
+        
+        return hasDate && matchesFolder && matchesTags
+      })
+      setNotes(filteredData)
     } catch (err) {
       setError('Failed to load calendar data. Please try again.')
       console.error('Error loading notes:', err)
