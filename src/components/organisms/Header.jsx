@@ -1,10 +1,15 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { motion } from 'framer-motion'
+import { useSelector } from 'react-redux'
 import ApperIcon from '@/components/ApperIcon'
 import SearchBar from '@/components/molecules/SearchBar'
 import Button from '@/components/atoms/Button'
+import { AuthContext } from '../../App'
 
 const Header = ({ onMenuToggle, onCreateNote, onCreateTask, title = "Dashboard" }) => {
+  const { logout } = useContext(AuthContext)
+  const { user } = useSelector((state) => state.user)
+
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -54,7 +59,7 @@ const Header = ({ onMenuToggle, onCreateNote, onCreateTask, title = "Dashboard" 
             Task
           </Button>
 
-          <div className="flex items-center space-x-2">
+<div className="flex items-center space-x-2">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -71,6 +76,31 @@ const Header = ({ onMenuToggle, onCreateNote, onCreateTask, title = "Dashboard" 
             >
               <ApperIcon name="Settings" size={20} className="text-gray-600" />
             </motion.button>
+
+            {user && (
+              <div className="flex items-center space-x-3 ml-4 pl-4 border-l border-gray-200">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-sm font-medium">
+                      {user.firstName?.[0] || user.emailAddress?.[0] || 'U'}
+                    </span>
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 hidden sm:block">
+                    {user.firstName || user.emailAddress}
+                  </span>
+                </div>
+                
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={logout}
+                  className="text-gray-600 hover:text-gray-800"
+                >
+                  <ApperIcon name="LogOut" size={16} className="mr-1" />
+                  Logout
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
