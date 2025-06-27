@@ -102,11 +102,11 @@ useEffect(() => {
       )}
 
       {/* Sidebar */}
-      <motion.aside
-        initial={{ x: -280 }}
-        animate={{ x: isOpen ? 0 : -280 }}
+<motion.aside
+        initial={{ x: -320 }}
+        animate={{ x: isOpen ? 0 : -320 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="fixed left-0 top-0 h-full w-70 bg-white border-r border-gray-200 z-50 lg:relative lg:translate-x-0 lg:z-auto shadow-xl lg:shadow-none"
+        className="fixed left-0 top-0 h-full w-80 bg-white border-r border-gray-200 z-50 lg:relative lg:translate-x-0 lg:z-auto shadow-xl lg:shadow-none"
       >
         <div className="flex flex-col h-full">
           {/* Header */}
@@ -204,7 +204,7 @@ useEffect(() => {
             </div>
           </div>
 {/* Folders Section */}
-          <div className="px-4 pb-4 border-t border-gray-200 pt-4">
+          <div className="px-4 pb-4 border-t border-gray-200 pt-4 flex-shrink-0">
             <FolderTree 
               folders={folders}
               selectedFolder={selectedFolder}
@@ -227,9 +227,9 @@ useEffect(() => {
                   Clear
                 </button>
               )}
-            </div>
+</div>
             
-            <div className="max-h-32 overflow-y-auto">
+            <div className="max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
               {allTags.length === 0 ? (
                 <p className="text-xs text-gray-500 italic">No tags found</p>
               ) : (
@@ -257,11 +257,10 @@ useEffect(() => {
                       </span>
                     </button>
                   ))}
-                </div>
+</div>
               )}
             </div>
           </div>
-
           {/* Footer */}
           <div className="p-4 border-t border-gray-200">
             <div className="flex items-center justify-between text-xs text-gray-500">

@@ -60,15 +60,15 @@ const Layout = () => {
     }
   }
 
-  return (
-<div className="min-h-screen bg-gray-50 flex">
+return (
+    <div className="min-h-screen bg-gray-50 flex">
       <Sidebar 
         isOpen={sidebarOpen} 
         onClose={closeSidebar}
         onCreateNote={handleCreateNote}
         onCreateTask={handleCreateTask}
       />
-<div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 lg:ml-0">
         <Header 
           onMenuToggle={toggleSidebar}
         />
