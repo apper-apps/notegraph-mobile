@@ -9,9 +9,9 @@ const Loading = ({ type = 'default' }) => {
           <motion.div
             key={i}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: i * 0.1 }}
-            className="bg-white rounded-lg shadow-sm border p-4"
+transition={{ delay: i * 0.1 }}
+            className="bg-white rounded-2xl shadow-soft border border-gray-100 p-4"
+          >
           >
             <div className="flex items-start space-x-3">
               <div className="w-4 h-4 bg-primary-200 rounded animate-pulse" />
@@ -31,9 +31,9 @@ const Loading = ({ type = 'default' }) => {
     )
   }
 
-  if (type === 'calendar') {
+if (type === 'calendar') {
     return (
-      <div className="bg-white rounded-lg shadow-sm border p-6">
+      <div className="bg-white rounded-2xl shadow-soft border border-gray-100 p-6">
         <div className="space-y-4">
           <div className="h-8 bg-primary-200 rounded animate-pulse w-48" />
           <div className="grid grid-cols-7 gap-2">
@@ -49,9 +49,9 @@ const Loading = ({ type = 'default' }) => {
     )
   }
 
-  if (type === 'graph') {
+if (type === 'graph') {
     return (
-      <div className="bg-white rounded-lg shadow-sm border p-8 h-96 flex items-center justify-center">
+      <div className="bg-white rounded-2xl shadow-soft border border-gray-100 p-8 h-96 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="relative">
             {[...Array(5)].map((_, i) => (

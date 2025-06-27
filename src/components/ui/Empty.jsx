@@ -54,18 +54,18 @@ const Empty = ({
 
   const emptyState = getEmptyState()
 
-  return (
+return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-surface rounded-lg border border-primary-100 p-12 text-center"
+      className="bg-white rounded-2xl border border-gray-100 p-12 text-center shadow-soft hover:shadow-medium transition-shadow duration-300"
     >
       <div className="flex flex-col items-center space-y-6">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-          className="w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center shadow-lg"
+          className="w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg"
         >
           <ApperIcon name={emptyState.icon} className="w-10 h-10 text-white" />
         </motion.div>

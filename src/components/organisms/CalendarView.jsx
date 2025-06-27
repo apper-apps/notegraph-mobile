@@ -52,8 +52,8 @@ const CalendarView = ({ notes, onEditNote, onDeleteNote }) => {
         </div>
       </div>
 
-      {/* Calendar Grid */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+{/* Calendar Grid */}
+      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-soft">
         {/* Day Headers */}
         <div className="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (

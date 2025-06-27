@@ -61,8 +61,8 @@ const Layout = () => {
   }
 
 return (
-    <div className="h-screen w-screen bg-gray-50 flex overflow-hidden">
-      <Sidebar 
+    <div className="h-screen w-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex overflow-hidden">
+      <Sidebar
         isOpen={sidebarOpen} 
         onClose={closeSidebar}
         onCreateNote={handleCreateNote}

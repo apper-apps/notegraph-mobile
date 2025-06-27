@@ -153,8 +153,8 @@ const GraphVisualization = ({ notes = [], onNodeClick, className = "" }) => {
     setSelectedNode(null)
   }
 
-  return (
-    <div className={`relative bg-white rounded-lg border border-gray-200 overflow-hidden ${className}`}>
+return (
+    <div className={`relative bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-soft ${className}`}>
       {/* Controls */}
       <div className="absolute top-4 right-4 z-10 flex items-center space-x-2">
         <Button
@@ -282,8 +282,8 @@ const GraphVisualization = ({ notes = [], onNodeClick, className = "" }) => {
         </svg>
       </div>
 
-      {/* Legend */}
-      <div className="absolute bottom-4 left-4 bg-white rounded-lg border border-gray-200 p-3 shadow-sm max-w-48">
+{/* Legend */}
+      <div className="absolute bottom-4 left-4 bg-white rounded-xl border border-gray-100 p-3 shadow-soft max-w-48">
         <h4 className="text-sm font-semibold text-gray-700 mb-2">Legend</h4>
         <div className="space-y-2 text-xs">
           {/* Folder colors */}
@@ -298,9 +298,12 @@ const GraphVisualization = ({ notes = [], onNodeClick, className = "" }) => {
                 <span className="capitalize">{folderId}</span>
               </div>
             ))
-          })()}
+})()}
           
-          {activeFolders.length > 0 && <div className="border-t border-gray-200 my-2"></div>}
+          {(() => {
+            const activeFolders = [...new Set(notes.map(note => note.folderId).filter(Boolean))]
+            return activeFolders.length > 0 ? <div className="border-t border-gray-200 my-2"></div> : null
+          })()}
           
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-green-500 rounded-full"></div>
@@ -315,10 +318,10 @@ const GraphVisualization = ({ notes = [], onNodeClick, className = "" }) => {
 
       {/* Node Info Panel */}
       {selectedNode && (
-        <motion.div
+<motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="absolute top-4 left-4 bg-white rounded-lg border border-gray-200 p-4 shadow-lg max-w-xs"
+          className="absolute top-4 left-4 bg-white rounded-xl border border-gray-100 p-4 shadow-soft max-w-xs"
         >
           {(() => {
             const node = nodes.find(n => n.id === selectedNode)
