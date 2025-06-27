@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import 'react-toastify/dist/ReactToastify.css';
+
+/* Custom toast styling */
+.Toastify__toast {
+  @apply bg-white border-l-4 border-primary-600 shadow-lg rounded-lg font-body text-sm;
+  padding: 16px;
+  min-height: auto;
+}
+
+.Toastify__toast--success {
+  @apply border-green-500;
+}
+
+.Toastify__toast--error {
+  @apply border-red-500;
+}
+
+.Toastify__toast--warning {
+  @apply border-accent-500;
+}
+
+.Toastify__toast--info {
+  @apply border-blue-500;
+}
+
+.Toastify__toast-body {
+  @apply text-gray-800 p-0 m-0;
+}
+
+.Toastify__close-button {
+  @apply text-gray-400 hover:text-gray-600 opacity-100;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary-300 rounded-full hover:bg-primary-400;
+}
+
+/* Graph paper background */
+.graph-paper {
+  background-image: radial-gradient(circle, rgba(91, 79, 207, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Custom markdown editor styles */
+.markdown-editor {
+  font-family: 'Inter', monospace;
+  line-height: 1.6;
+}
+
+.markdown-editor:focus {
+  outline: none;
+}
+
+/* Node graph styles */
+.graph-node {
+  transition: all 0.2s ease-out;
+}
+
+.graph-node:hover {
+  transform: scale(1.1);
+}
+
+.graph-connection {
+  opacity: 0.6;
+  transition: opacity 0.2s ease-out;
+}
+
+.graph-connection:hover {
+  opacity: 1;
+}
+
+/* Calendar dot indicators */
+.calendar-dot {
+  @apply w-2 h-2 rounded-full absolute;
+  top: 2px;
+  right: 2px;
+}
+
+/* Tag pill styles */
+.tag-pill {
+  @apply px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-700 hover:bg-primary-200 transition-colors duration-150;
+}
+
+/* Folder tree styles */
+.folder-tree-item {
+  @apply flex items-center space-x-2 px-2 py-1 rounded-md hover:bg-primary-50 cursor-pointer transition-colors duration-150;
+}
+
+.folder-tree-item.active {
+  @apply bg-primary-100 text-primary-800;
+}
