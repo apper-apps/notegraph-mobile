@@ -112,7 +112,7 @@ const NoteEditor = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
         onClick={onClose}
       >
         <motion.div
@@ -120,11 +120,11 @@ const NoteEditor = ({
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
+          className="bg-white rounded-xl shadow-2xl w-full max-w-xl lg:max-w-4xl max-h-[90vh]"
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <div className="flex items-center space-x-3">
+          <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
+            <div className="flex items-center space-x-2 sm:space-x-3">
               <ApperIcon 
                 name={formData.type === 'task' ? 'CheckSquare' : 'FileText'} 
                 className="text-primary-600" 
@@ -155,12 +155,11 @@ const NoteEditor = ({
               </button>
             </div>
           </div>
-
-          {/* Form */}
+{/* Form */}
           <form onSubmit={handleSubmit} className="flex flex-col h-full">
-            <div className="flex-1 p-6 space-y-6 overflow-y-auto">
+            <div className="flex-1 p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-y-auto">
               {/* Basic Info */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div className="md:col-span-2">
                   <Input
                     label="Title"
@@ -279,9 +278,9 @@ const NoteEditor = ({
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="flex items-center justify-between p-6 border-t border-gray-200 bg-gray-50">
-              <div className="text-sm text-gray-500">
+{/* Footer */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 sm:p-6 border-t border-gray-200 bg-gray-50 space-y-3 sm:space-y-0">
+              <div className="text-sm text-gray-500 order-2 sm:order-1">
                 {note && (
                   <span>
                     Last updated: {format(new Date(note.updatedAt), 'PPp')}
@@ -289,7 +288,7 @@ const NoteEditor = ({
                 )}
               </div>
               
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 order-1 sm:order-2">
                 <Button
                   type="button"
                   variant="ghost"
