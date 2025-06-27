@@ -38,7 +38,7 @@ const Header = ({ onMenuToggle, onCreateNote, onCreateTask, title = "Dashboard" 
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center space-x-3">
+<div className="flex items-center space-x-3">
           <Button
             variant="ghost"
             size="sm"
